@@ -11,5 +11,5 @@ Este repositorio es privado de Israel López y tiene como objetivo facilitar la 
 Copia este linea en la terminal:
 
 ```bash
-$ wget {{site.url}}
+$ wget {{site.url}}/{{site.baseurl}}
 ```
