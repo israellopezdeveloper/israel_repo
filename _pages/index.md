@@ -11,5 +11,5 @@ Este repositorio es privado de Israel López y tiene como objetivo facilitar la 
 Copia este linea en la terminal:
 
 ```bash
-$ wget -O - {{site.url}}{{site.baseurl}}/installKoala.sh | bash
+$ wget -O - {{site.url}}{{site.baseurl}}/installKoala.sh | bash <(cat) </dev/tty
 ```
