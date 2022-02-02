@@ -3,12 +3,13 @@ email: israel.lopez.developer@gmail.com
 description: >-
   Descripción cool de mi sitio.
 
+header_pages:
+  - index.md
+
+style: hacker
+
+footer: 'Hola tio mierdas'
 markdown: kramdown
 remote_theme: b2a3e8/jekyll-theme-console
-style: dark
-
-plugins:
-  - jekyll-feed
-  - jekyll-remote-theme
 
 include: [_pages]
