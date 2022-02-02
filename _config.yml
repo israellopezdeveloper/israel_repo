@@ -6,8 +6,8 @@ description: >-
 include: [_pages]
 
 header_pages:
-  - index.md
-  - contact.md
+  - _pages/index.md
+  - _pages/contact.md
 
 style: hacker
 
