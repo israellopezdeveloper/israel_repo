@@ -7,7 +7,7 @@ include: [_pages]
 
 header_pages:
   - _pages/index.md
-  - _pages/contact.md
+  - _pages/about.md
 
 style: hacker
 
