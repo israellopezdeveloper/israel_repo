@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ssh -O cancel -L 8080:gitlab.devo.internal:443 thinkpad
+ssh -O cancel -L 8081:gitlab.devo.internal:443 thinkpad

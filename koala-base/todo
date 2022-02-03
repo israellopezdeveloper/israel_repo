@@ -1,0 +1,13 @@
+#!/bin/sh
+
+while true
+do
+  inotifywait -q -r -e close_write,move,delete,create,modify \
+    --exclude '(build|.git|README.md|CMAkeList.txt)' . |
+  while read -r line
+  do
+    printf '\033c'
+    figlet -c "TODO list" | lolcat
+    { echo "FILE,LINE,COMMENT"; git --no-pager grep -EIn "TODO|FIXME" | sed -rn 's/^(.*):([0-9]+):.*TODO[ \t]*|FIXME[ \t]*(.*)$/\1,\2,\3/p'; } | column -t -s','
+  done
+done

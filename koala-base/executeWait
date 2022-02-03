@@ -1,0 +1,14 @@
+#!/bin/bash
+
+i=0
+while true
+do
+  inotifywait . -e modify -q "$(realpath "${2}")" | 
+    while read -r line;
+    do
+      echo "Executing -> ${1} (${i})"
+      sleep 0.5s;
+      eval "${1}"
+    done
+    ((i++))
+done 

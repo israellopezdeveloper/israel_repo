@@ -1,0 +1,9 @@
+post_install() {
+  post_upgrade
+}
+
+post_upgrade() {
+  git clone https://gitlab.com/ILM-Investigaciones/archinstallation/dotfiles.git .dotfiles
+  cd .dotfiles
+  stow */
+}

@@ -1,0 +1,10 @@
+#!/usr/bin/env dash
+
+set -eu
+
+show_help () {
+  printf "\vEste comando ejecuta una instancia de tmux del proyecto personal apuntado por el archivo
+  ${HOME}/.config/personal.proy. Que contendrá un nombre de archivo de tmuxinator.\n"
+}
+
+tmuxinator start "$(cat "${HOME}/.config/personal.proy")"

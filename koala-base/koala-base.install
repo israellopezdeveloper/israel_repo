@@ -1,0 +1,32 @@
+post_install() {
+  post_upgrade
+}
+
+post_upgrade() {
+  rm /etc/hostname 
+  mv /etc/koala-base-hostname /etc/hostname
+  rm /etc/locale.conf
+  mv /etc/koala-base-locale.conf /etc/locale.conf
+  rm /etc/locale.gen
+  mv /etc/koala-base-locale.gen /etc/locale.gen
+  rm /etc/vconsole.conf
+  mv /etc/koala-base-vconsole.conf /etc/vconsole.conf
+  rm /usr/local/bin/createTunnels
+  mv /usr/local/bin/koala-base-createTunnels /usr/local/bin/createTunnels
+  rm /usr/local/bin/deleteTunnels
+  mv /usr/local/bin/koala-base-deleteTunnels /usr/local/bin/deleteTunnels
+  rm /usr/local/bin/executeWait
+  mv /usr/local/bin/koala-base-executeWait /usr/local/bin/executeWait
+  rm /usr/local/bin/git_all
+  mv /usr/local/bin/koala-base-git_all /usr/local/bin/git_all
+  rm /usr/local/bin/man_pdf
+  mv /usr/local/bin/koala-base-man_pdf /usr/local/bin/man_pdf
+  rm /usr/local/bin/personal
+  mv /usr/local/bin/koala-base-personal /usr/local/bin/personal
+  rm /usr/local/bin/todo
+  mv /usr/local/bin/koala-base-todo /usr/local/bin/todo
+  rm /etc/X11/xorg.conf.d/10-monitor.conf
+  mv /etc/X11/xorg.conf.d/koala-base-10-monitor.conf /etc/X11/xorg.conf.d/10-monitor.conf
+  cd /usr/share/sddm/themes
+  tar xzvf koala-base-sddm.tar.gz
+}

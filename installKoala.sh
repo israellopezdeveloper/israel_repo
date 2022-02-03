@@ -10,3 +10,10 @@ EOF
 
 sudo -u root passwd israel
 
+git clone https://aur.archlinux.org/trizen.git
+cd trizen
+sudo makepkg -si
+cd ..
+rm rf trizen
+
+trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm

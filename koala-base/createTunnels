@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ssh -L 8080:gitlab.devo.internal:443 -N thinkpad &
+ssh -L 8081:nexus.devo.internal:443 -N thinkpad &
+ssh -L 8082:jenkins.devo.internal:443 -N thinkpad &

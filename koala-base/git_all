@@ -1,0 +1,304 @@
+#!/usr/bin/env sh
+
+set -eu
+
+show_help () {
+  printf "\vEste comando ejecuta comandos git en todos los repositorios locales\n"
+  printf "contenidos en el directorio desde el cual se llama, verificando que la\n"
+  printf "configuración de los mismos sea la correcta. Entre las operaciones que\n"
+  printf "se permiten hacer son:\n"
+  printf "\v\t--help, -h muestra la ayuda"
+  printf "\v\t--pull, -l hace pull a todos los repositorios\n"
+  printf "\v\t--push, -p hace push a todos los repositorios, durante esta acción\n"
+  printf "\t\tse pregunta al usuario si desea cambiar de rama.\n"
+  printf "\v\t--quiet, -q desactiva las preguntas al usuario al hacer push\n"
+  printf "\v\t--manage, -m modificar las ramas\n"
+}
+
+select_loop () {
+  TITLE_SELECT="${1}"
+  shift
+  PROMPT_SELECT="${1}"
+  shift
+  OPTIONS_SELECT=$*
+  COUNT_OPTIONS=1
+
+  printf "\v"
+  printf " %s\n" "${TITLE_SELECT}"
+  printf " %s\n" "$(echo "${TITLE_SELECT}" | sed -e "s/./=/g")"
+  printf "\v"
+  for item in ${OPTIONS_SELECT}
+  do
+    printf "   %u) %s\n" ${COUNT_OPTIONS} "${item}"
+    COUNT_OPTIONS=$((COUNT_OPTIONS+1))
+  done
+  SELECTED_ITEM=""
+  while [ "${SELECTED_ITEM}" = "" ]
+  do
+    printf "\v"
+    printf "%s " "${PROMPT_SELECT}"
+    read -r text
+    SELECTED_ITEM=${text}
+    [ "${text}" -lt "${COUNT_OPTIONS}" ] 2> /dev/null || SELECTED_ITEM=""
+  done
+  COUNT_OPTIONS=1
+  for item in ${OPTIONS_SELECT}
+  do
+    if [ "${COUNT_OPTIONS}" -eq "${SELECTED_ITEM}" ]
+    then
+      SELECTED_TEXT="${item}"
+    fi
+    COUNT_OPTIONS=$((COUNT_OPTIONS+1))
+  done
+  unset TITLE_SELECT
+  unset PROMPT_SELECT
+  unset COUNT_OPTIONS
+  unset OPTIONS_SELECT
+  unset text
+}
+
+set_user_config () {
+  if [ "${VERBOSITY}" = "quiet" ]
+  then
+    REPO="$(git config --get remote.origin.url | grep "@gitlab.devo.internal")"
+	  if [ "${REPO}" = "" ]
+    then
+      git config user.name "Israel Lopez"
+      git config user.email "israel.lopez.developer@gmail.com"
+    else
+      git config user.name "Israel Lopez"
+      git config user.email "israel.lopez@devo.com"
+    fi
+  else
+    select_loop "Identidad" "Selecciona tu identidad" "Personal" "Devo"
+	  if [ "${SELECTED_ITEM}" = "1" ]
+    then
+      git config user.name "Israel Lopez"
+      git config user.email "israel.lopez.developer@gmail.com"
+    elif [ "${SELECTED_ITEM}" = "2" ]
+    then
+      git config user.name "Israel Lopez"
+      git config user.email "israel.lopez@devo.com"
+    fi
+  fi
+}
+
+change_branch () {
+  (
+    cd "${1}"
+    if [ "${VERBOSITY}" = "normal" ]
+    then
+      select_loop "[$(git branch -a | cat | grep "^\*" | sed "s/^[* ]*//g")] Quieres cambiar de rama?" "Elige opción:" "SI" "NO"
+      if [ "${SELECTED_ITEM}" = "1" ]
+      then
+        select_loop "Elige rama" "Que rama?" "Nueva" $(git branch -a | cat | sed "s/^[* ]*//g" | sed "s/remotes\/origin\///g" | sed "s/.*->.*//g" | sort | uniq)
+        if [ "${SELECTED_ITEM}" = "1" ]
+        then
+          printf "Escriba el nombre de la rama: "
+          read -r new_branch_name
+          git checkout -b  "${new_branch_name}"
+          git push --set-upstream origin "${new_branch_name}"
+        elif [ "${SELECTED_TEXT}" != "" ]
+        then
+          git checkout "${SELECTED_TEXT}"
+        fi
+      fi
+    fi
+  )
+}
+
+git_actions_push () {
+  (
+    cd "${1}"
+    figlet -c "$(basename "$(realpath "${1}")")" | lolcat
+    git config user.name > /dev/null || set_user_config
+    if [ "${VERBOSITY}" = "normal" ]
+    then
+      git add . && change_branch "${1}" && git commit || echo "Sin actividad reciente"
+    else
+      git add . && change_branch "${1}" && git commit -m "Quick push" || echo "Sin actividad reciente"
+    fi
+    git push || git push --set-upstream origin "$(git branch -a | cat | grep "^\*" | sed "s/^[* ]*//g")"
+    cd ..
+  )
+}
+
+iterate_folder_push () {
+  repositories="$(find "${1}/" -name ".git" -print | sed -e ':a;N;$!ba;s/\n/\|/g' | cat)"
+  OLDIFS=$IFS
+  echo "PASA $repositories"
+  IFS='|'; for repo in ${repositories}
+  do
+    IFS=$OLDIFS
+    printf "\033c"
+    git_actions_push "${repo}/.."
+  done
+}
+
+git_check_branch_on_pull () {
+  git fetch --all -p > /dev/null 2>&1 
+  default_branch="$(git remote show origin | grep "HEAD" | cut -d ":" -f 2 | sed -e "s/ //g")"
+  git branch -r | cat | grep "origin/$(git branch --show-current)" || git checkout "${default_branch}"
+}
+
+git_actions_pull () {
+  (
+    cd "${1}"
+    figlet -c "$(basename "$(realpath "${1}")")" | lolcat
+    git_check_branch_on_pull
+    git config user.name > /dev/null || set_user_config
+    git pull
+    cd ..
+  )
+}
+
+iterate_folder_pull () {
+  repositories="$(find "${1}/" -name ".git" -print | sed -e ':a;N;$!ba;s/\n/\|/g' | cat)"
+  OLDIFS=$IFS
+  IFS='|'; for repo in ${repositories}
+  do
+    IFS=$OLDIFS
+    printf "\033c"
+    git_actions_pull "${repo}/.."
+  done
+}
+
+purge_repository () {
+  (
+    cd "${1}"
+    current_branch="$(git branch --show-current)"
+    remote_branches="$(git fetch -p; git branch -r | cat | sed -e 's@.* -> .*@@g' | sed -e 's@^[ \t]*@@g' | sed -e 's@origin/@@g' | sed -e ':a;N;$!ba;s@\n@\|@g' | sed -e 's@^|@@g')"
+    local_branches="$(git branch | cat | sed -e 's@.* -> .*@@g' | sed -e 's@^[ \+*]*@@g' | sed -e 's@^[ \t]*@@g' | sed -e 's@origin/@@g' | sed -e ':a;N;$!ba;s@\n@\|@g' | sed -e 's@^|@@g')"
+    echo "${remote_branches}" | grep "${current_branch}" > /dev/null 2>&1 || (
+        git add . && git commit > /dev/null 2>&1 || echo "Sin actividad reciente"
+        default_branch="$(git remote show origin | grep "HEAD" | cut -d ":" -f 2 | sed -e "s/ //g")"
+        git checkout "${default_branch}" > /dev/null 2>&1
+        git push > /dev/null 2>&1
+      )
+    OLDIFS=$IFS
+    IFS='|'; for item in $(echo "${local_branches}")
+    do
+      echo "${remote_branches}" | grep "${item}" > /dev/null 2>&1 || git branch -D "${item}"
+    done
+    #IFS='|'; for item in $(echo "${local_branches}" | sed -e "s@${remote_branches}@@g" | sed -e "s@^\|@@g" | sed -e ':a;N;$!ba;s@|$@@g' | tr -d '|'); do
+    #  git branch -D "${item}"
+    #done
+    IFS=$OLDIFS
+  )
+}
+
+remove_local_branch () {
+  (
+    cd "${1}"
+    branches="$(git branch | cat | sed -e 's@^[ \t\*]*@@g' | sed -e ':a;N;$!ba;s/\n/\|/g')"
+    current_branch="$(git branch --show-current)"
+    default_branch="$(git remote show origin | grep "HEAD" | cut -d ":" -f 2 | sed -e "s/ //g")"
+    OLDIFS=$IFS
+    IFS='|'; select_loop "Elige rama a eliminar" "Que rama?" "${branches}"
+    IFS=$OLDIFS
+    git add . && git commit && git push || echo "Sin actividad reciente"
+    git checkout "${SELECTED_TEXT}" && git add . && git commit && git push || echo "Sin actividad reciente"
+    echo "${SELECTED_TEXT}" | grep "${current_branch}" && git checkout "${default_branch}" || git checkout "${current_branch}"
+    git branch -d "${SELECTED_TEXT}"
+  )
+}
+
+create_local_branch () {
+  (
+    cd "${1}"
+    printf "Escriba el nombre de la rama: "
+    read -r new_branch_name
+    git add . && git commit || echo "Todos los cambios estan guardados"
+    git checkout -b  "${new_branch_name}"
+    git push --set-upstream origin "${new_branch_name}"
+  )
+}
+
+repository_manage () {
+  (
+    figlet -c "$(basename "$(realpath "${1}")")" | lolcat
+    OLDIFS=$IFS
+    IFS='|'; select_loop "Elige acción" "Que acción?" "Eliminar rama local|Purgar ramas locales|Crear nueva rama|Cambiar a rama existente"
+    IFS=$OLDIFS
+    if [ ${SELECTED_ITEM} -eq 1 ]
+    then
+      remove_local_branch "${1}"
+    elif [ ${SELECTED_ITEM} -eq 2 ]
+    then
+      purge_repository "${1}"
+    elif [ ${SELECTED_ITEM} -eq 3 ]
+    then
+      create_local_branch "${1}"
+    elif [ ${SELECTED_ITEM} -eq 4 ]
+    then
+      change_branch "${1}"
+    fi
+  )
+}
+
+select_folder_manage () {
+  repositories="$(find "${1}/" -name ".git" -print | sed -e ':a;N;$!ba;s/\n/\|/g' | sed -e "s@$(pwd)/@@g" | sed -e "s@/.git@@g" | cat)"
+  OLDIFS=$IFS
+  IFS='|'; select_loop "Elige repositorio" "Que repositorio?" ${repositories}
+  IFS=$OLDIFS
+  repository_manage "$(pwd)/${SELECTED_TEXT}"
+}
+
+manage_loop () {
+  select_folder_manage "${1}"
+  OLDIFS=$IFS
+  IFS='|'; select_loop "Quieres continuar" "Seleccione una acción?" "Continuar|Salir"
+  IFS=$OLDIFS
+  while [ ${SELECTED_ITEM} -eq 1 ]
+  do
+    select_folder_manage "${1}"
+    OLDIFS=$IFS
+    IFS='|'; select_loop "Quieres continuar" "Seleccione una acción?" "Continuar|Salir"
+    IFS=$OLDIFS
+  done
+}
+
+ARGS=$(getopt -o 'plqhm' --long 'push,pull,quiet,help,manage' -- "$@") || exit
+eval "set -- $ARGS"
+
+ACTION=""
+VERBOSITY="normal"
+SHOW_HELP="false"
+while true; do
+  case $1 in
+    (-p|--push)
+      ACTION="push"; shift;;
+    (-l|--pull)
+      ACTION="pull"; shift;;
+    (-q|--quiet)
+      VERBOSITY="quiet"; shift;;
+    (-h|--help)
+      SHOW_HELP="true"; shift;;
+    (-m|--manage)
+      ACTION="manage"; shift;;
+    (--)
+      shift; break;;
+    (*)
+      show_help; exit 1;;
+  esac
+done
+
+if [ "${SHOW_HELP}" = "true" ]
+then
+  show_help
+fi
+
+if [ "${ACTION}" = "pull" ]
+then
+  iterate_folder_pull "${PWD}"
+fi
+
+if [ "${ACTION}" = "push" ]
+then
+  iterate_folder_push "${PWD}"
+fi
+
+if [ "${ACTION}" = "manage" ]
+then
+  manage_loop "${PWD}"
+fi

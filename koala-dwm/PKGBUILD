@@ -1,0 +1,27 @@
+# Maintainer: Israel López <israel.lopez.developer@gmail.com>
+pkgname=koala-dwm
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="Base home configuration for koalas systems"
+arch=('any')
+url=""
+license=('MIT')
+depends=(
+  'brave-bin'
+  'nerd-fonts-complete'
+  'bat'
+  'btop'
+  'clang'
+  'dmenu'
+  'feh'
+  'kitty'
+  'sddm'
+)
+source=( 'dwm'  'dwmblocks'  'dwm.desktop'  'initDWM.sh' )
+md5sums=( 'baf3406476bb72b634141a4ce165eebc'  '138176b17867cd812687f204b1a6bc50'  '0dfd471a4c720d53a46bff9efa672cfe'  '615bcdcfe45c429889ff60e1b5654c38' )
+package() {
+  install -Dm 0755 dwm "$pkgdir/usr/local/bin/dwm"
+  install -Dm 0755 dwmblocks "$pkgdir/usr/local/bin/dwmblocks"
+  install -Dm 0644 dwm.desktop "$pkgdir/usr/share/xsessions/dwm.desktop"
+  install -Dm 0755 initDWM.sh "$pkgdir/usr/local/bin/initDWM.sh"
+}
