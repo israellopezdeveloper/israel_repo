@@ -12,7 +12,7 @@ sudo -u root passwd israel
 
 git clone https://aur.archlinux.org/trizen.git
 cd trizen
-sudo makepkg -si
+makepkg -si
 cd ..
 rm rf trizen
 
