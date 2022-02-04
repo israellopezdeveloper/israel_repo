@@ -16,4 +16,4 @@ makepkg -si
 cd ..
 rm rf trizen
 
-trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm koala-dwm koala-home
+trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm brave-bin nerd-fonts-complete koala-dwm
