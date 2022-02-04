@@ -6,38 +6,6 @@ pkgdesc="Base home configuration for koalas systems"
 arch=('any')
 url=""
 license=('MIT')
-depends=(
-  'aurutils'
-  'brave-bin'
-  'cmake-language-server'
-  'diagnostic-languageserver'
-  'dockerfile-language-server-bin'
-  'google-chrome'
-  'jdtls'
-  'kotlin-language-server-git'
-  'libnvidia-container'
-  'libnvidia-container-tools'
-  'libopenaptx-git'
-  'neovim-plug'
-  'nerd-fonts-complete'
-  'noip'
-  'nvidia-container-toolkit'
-  'python-configparser'
-  'python-ipaddress'
-  'python-pagelabels'
-  'python-roman'
-  'python-scandir'
-  'rar'
-  'remark-cli'
-  'remark-lint'
-  'stylua-bin'
-  'sublime-text-3'
-  'termpdf.py-git'
-  'todoist'
-  'trizen'
-  'typescript-language-server-bin'
-  'typora'
-  'whitesur-kde-theme-git'
-)
+depends=()
 source=()
 install=koala-home.install

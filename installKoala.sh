@@ -17,6 +17,6 @@ cd ..
 rm rf trizen
 
 sudo -u root mount -o remount,size=10G,noatime /tmp
-sudo -u root -i <<EOF
-pacman -Syyu --noconfirm koala-dwm
-EOF
+trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm nerd-fonts-complete
+trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm brave-bin google-chrome kotlin-languaje-server-git cmake-language-server diagnostic-languageserver dockerfile-language-server-bin jdtls libnvidia-container libnvidia-container-tools libopenaptx-git neovim-plug noip nvidia-container-toolkit python-configparser python-ipaddress python-pagelabels python-roman python-scandir remark-cli remark-lint stylua-bin sublime-text-3 termpdf.py-git todoist typescript-language-server-bin typora whitesur-kde-theme-git rar
+sudo -u root -i pacman -Syyu --noconfirm koala-dwm koala-home
