@@ -1,0 +1,8 @@
+post_install() {
+  post_upgrade
+}
+
+post_upgrade() {
+  trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm nerd-fonts-complete
+  trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm brave-bin
+}

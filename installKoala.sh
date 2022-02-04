@@ -17,9 +17,6 @@ cd ..
 rm rf trizen
 
 sudo -u root mount -o remount,size=10G,noatime /tmp
-rm -rf /tmp/*
-trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm nerd-fonts-complete
-rm -rf /tmp/*
-trizen --sudo_remove_timestamp=0 --sudo_autorepeat=1 --sudo_autorepeat_at_runtime=1 -Syyu --noconfirm brave-bin koala-dwm koala-home
-sudo -u root umount /tmp
-sudo -u root mount /tmp
+sudo -u root -i <<EOF
+pacman -Syyu --noconfirm koala-dwm
+EOF

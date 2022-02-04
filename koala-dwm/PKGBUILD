@@ -23,3 +23,4 @@ package() {
   install -Dm 0644 dwm.desktop "$pkgdir/usr/share/xsessions/dwm.desktop"
   install -Dm 0755 initDWM.sh "$pkgdir/usr/local/bin/initDWM.sh"
 }
+install=koala-dwm.install
