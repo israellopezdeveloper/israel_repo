@@ -7,8 +7,6 @@ arch=('any')
 url=""
 license=('MIT')
 depends=(
-  'brave-bin'
-  'nerd-fonts-complete'
   'bat'
   'btop'
   'clang'
