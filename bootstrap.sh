@@ -2,7 +2,7 @@
 
 set -e
 
-pacman -Syyu --noconfirm wget
+pacman -Syyu --noconfirm wget git 
 
 sfdisk --no-reread --force /dev/sda < /vagrant/new-config
 

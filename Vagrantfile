@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.box = "archlinux/archlinux"
   config.disksize.size = '80GB'
-  config.vm.provision :shell, path: "bootstrap.sh"
+  config.vm.provision :shell, path: "bootstrap.sh", run: 'always'
   config.vm.provider "virtualbox" do |v|
     v.memory = 16384
     v.cpus = 2
