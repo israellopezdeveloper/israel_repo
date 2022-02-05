@@ -29,4 +29,5 @@ post_upgrade() {
   mv /etc/X11/xorg.conf.d/koala-base-10-monitor.conf /etc/X11/xorg.conf.d/10-monitor.conf
   cd /usr/share/sddm/themes
   tar xzvf koala-base-sddm.tar.gz
+  systemctl enable NetworkManager
 }
