@@ -3,7 +3,9 @@ post_install() {
 }
 
 post_upgrade() {
+  cd /home/israel
   git clone https://gitlab.com/ILM-Investigaciones/archinstallation/dotfiles.git .dotfiles
+  chown -R israel:users .dotfiles
   cd .dotfiles
   stow */
 }
