@@ -9,5 +9,6 @@ post_upgrade() {
   chown -R israel:users .dotfiles
   cd .dotfiles
   stow */
+  cd ..
   chown -R israel:users .
 }
