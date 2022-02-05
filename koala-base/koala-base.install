@@ -30,4 +30,5 @@ post_upgrade() {
   cd /usr/share/sddm/themes
   tar xzvf koala-base-sddm.tar.gz
   systemctl enable NetworkManager
+  locale-gen
 }

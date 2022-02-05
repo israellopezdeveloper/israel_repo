@@ -5,8 +5,9 @@ post_install() {
 post_upgrade() {
   systemctl enable sddm
   cd /home/israel
-  git clone https://gitlab.com/ILM-Investigaciones/archinstallation/dotfiles.git .dotfiles
+  git clone --recurse-submodules https://gitlab.com/ILM-Investigaciones/archinstallation/dotfiles.git .dotfiles
   chown -R israel:users .dotfiles
   cd .dotfiles
   stow */
+  chown -R israel:users .
 }
