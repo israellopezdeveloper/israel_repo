@@ -6,6 +6,6 @@ pkgdesc="Base home configuration for koalas systems"
 arch=('any')
 url=""
 license=('MIT')
-depends=()
+depends=('stow')
 source=()
 install=koala-home.install
