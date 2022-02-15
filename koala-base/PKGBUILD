@@ -178,6 +178,7 @@ depends=(
   'zathura'
   'zathura-pdf-mupdf'
   'zsh-completions'
+  'zsh-theme-powerlevel10k'
 )
 source=( 'hostname'  'locale.conf'  'locale.gen'  'vconsole.conf'  'createTunnels'  'deleteTunnels'  'executeWait'  'git_all'  'man_pdf'  'personal'  'todo'  '10-monitor.conf'  'sddm.tar.gz' )
 md5sums=( '859c54aa4f1bf90873ca3710bda4bbaf'  '0909630958f57994316d77e7d79cfa4d'  'ba4313814e3cfe6c6ff998c17dbae557'  'e4a7fe2d6dc7797c98b492ebef27b8a7'  '1f13a6a1801c5dd5a7a8f3af8c7a49d4'  '96206035fb307407e2995bae59c76859'  '21aa396c91339cccde20ab04a814f92f'  '02aa12c1221b6ad0c1384aba64fc4153'  '2640ac18051f9f52a50f3f0985f6f710'  'e437b46a19059046752ef1e35b2617de'  '4e37505ec01315f47bad8c42906791d2'  'b777fb77a5e6ff55003a11184aacfaa6'  '7b89546faf32bcfabd3274b5c3f37f28' )
